@@ -1,44 +1,33 @@
-/Users/Filip/Documents/emarkets/appusage/iperf-android/obj/local/arm64-v8a/objs/iperf3/iperf_api.o: \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_api.c \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_config.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/net.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/timer.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/queue.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/cjson.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_api.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_udp.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_tcp.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/units.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/tcp_window_size.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_util.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_locale.h \
-  /Users/Filip/Documents/emarkets/appusage/iperf-android/jni/version.h
+./obj/local/arm64-v8a/objs/iperf3/iperf_api.o: jni/iperf_api.c \
+  jni/iperf_config.h jni/net.h jni/iperf.h jni/timer.h jni/queue.h \
+  jni/cjson.h jni/iperf_api.h jni/iperf_udp.h jni/iperf_tcp.h \
+  jni/units.h jni/tcp_window_size.h jni/iperf_util.h jni/iperf_locale.h \
+  jni/version.h
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_config.h:
+jni/iperf_config.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/net.h:
+jni/net.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf.h:
+jni/iperf.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/timer.h:
+jni/timer.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/queue.h:
+jni/queue.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/cjson.h:
+jni/cjson.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_api.h:
+jni/iperf_api.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_udp.h:
+jni/iperf_udp.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_tcp.h:
+jni/iperf_tcp.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/units.h:
+jni/units.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/tcp_window_size.h:
+jni/tcp_window_size.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_util.h:
+jni/iperf_util.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/iperf_locale.h:
+jni/iperf_locale.h:
 
-/Users/Filip/Documents/emarkets/appusage/iperf-android/jni/version.h:
+jni/version.h:

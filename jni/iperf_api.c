@@ -2747,7 +2747,7 @@ iperf_new_stream(struct iperf_test *test, int s)
     if (test->tmp_template) {
         snprintf(template, sizeof(template) / sizeof(char), "%s", test->tmp_template);
     } else {
-        char buf[] = "/data/user/0/com.example.patrick.appusagestats/files/iperf3.XXXXXX";
+        char buf[] = "/data/local/tmp/iperf3.XXXXXX";
         snprintf(template, sizeof(template) / sizeof(char), "%s", buf);
     }
 
