@@ -7,8 +7,10 @@ LOCAL_LDFLAGS += -fPIE -pie
  
 LOCAL_MODULE := iperf3
 LOCAL_SRC_FILES :=                         cjson.c \
+					   dscp.c \
                                            iperf_api.c \
                                            iperf_client_api.c \
+					   iperf_auth.c \
                                            iperf_error.c \
                                            iperf_locale.c \
                                            iperf_sctp.c \
@@ -19,7 +21,6 @@ LOCAL_SRC_FILES :=                         cjson.c \
                                            main.c \
                                            net.c \
                                            tcp_info.c \
-                                           tcp_window_size.c \
                                            timer.c \
                                            units.c \
 

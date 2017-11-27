@@ -1,5 +1,6 @@
-/Users/Filip/Documents/emarkets/appusage/test/obj/local/arm64-v8a/objs/iperf3/cjson.o: \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/cjson.c \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/cjson.h
+./obj/local/arm64-v8a/objs/iperf3/cjson.o: jni/cjson.c jni/cjson.h \
+  jni/iperf_config.h
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/cjson.h:
+jni/cjson.h:
+
+jni/iperf_config.h:

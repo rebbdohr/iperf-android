@@ -1,17 +1,12 @@
-/Users/Filip/Documents/emarkets/appusage/test/obj/local/armeabi-v7a/objs/iperf3/units.o: \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/units.c \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf_config.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/timer.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/queue.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/cjson.h
+./obj/local/armeabi-v7a/objs/iperf3/units.o: jni/units.c jni/iperf.h \
+  jni/iperf_config.h jni/timer.h jni/queue.h jni/cjson.h
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/iperf.h:
+jni/iperf.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/iperf_config.h:
+jni/iperf_config.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/timer.h:
+jni/timer.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/queue.h:
+jni/queue.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/cjson.h:
+jni/cjson.h:

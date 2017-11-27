@@ -1,26 +1,19 @@
-/Users/Filip/Documents/emarkets/appusage/test/obj/local/arm64-v8a/objs/iperf3/iperf_sctp.o: \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf_sctp.c \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf_config.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/timer.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/queue.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/cjson.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf_api.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/iperf_sctp.h \
-  /Users/Filip/Documents/emarkets/appusage/test/jni/net.h
+./obj/local/arm64-v8a/objs/iperf3/iperf_sctp.o: jni/iperf_sctp.c \
+  jni/iperf_config.h jni/iperf.h jni/timer.h jni/queue.h jni/cjson.h \
+  jni/iperf_api.h jni/iperf_sctp.h jni/net.h
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/iperf_config.h:
+jni/iperf_config.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/iperf.h:
+jni/iperf.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/timer.h:
+jni/timer.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/queue.h:
+jni/queue.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/cjson.h:
+jni/cjson.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/iperf_api.h:
+jni/iperf_api.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/iperf_sctp.h:
+jni/iperf_sctp.h:
 
-/Users/Filip/Documents/emarkets/appusage/test/jni/net.h:
+jni/net.h:

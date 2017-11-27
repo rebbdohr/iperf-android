@@ -1,5 +1,5 @@
 /*
- * iperf, Copyright (c) 2014, 2015, The Regents of the University of
+ * iperf, Copyright (c) 2014, 2015, 2017, The Regents of the University of
  * California, through Lawrence Berkeley National Laboratory (subject
  * to receipt of any required approvals from the U.S. Dept. of
  * Energy).  All rights reserved.
@@ -31,7 +31,6 @@
 #include <errno.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <sys/errno.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <assert.h>
@@ -56,9 +55,54 @@
 #endif
 #endif /* HAVE_SENDFILE */
 
+#include <poll.h>
+
 #include "iperf_util.h"
 #include "net.h"
 #include "timer.h"
+
+/*
+ * timeout_connect adapted from netcat, via OpenBSD and FreeBSD
+ * Copyright (c) 2001 Eric Jackson <ericj@monkey.org>
+ */
+int
+timeout_connect(int s, const struct sockaddr *name, socklen_t namelen,
+    int timeout)
+{
+	struct pollfd pfd;
+	socklen_t optlen;
+	int flags, optval;
+	int ret;
+
+	flags = 0;
+	if (timeout != -1) {
+		flags = fcntl(s, F_GETFL, 0);
+		if (fcntl(s, F_SETFL, flags | O_NONBLOCK) == -1)
+			return -1;
+	}
+
+	if ((ret = connect(s, name, namelen)) != 0 && errno == EINPROGRESS) {
+		pfd.fd = s;
+		pfd.events = POLLOUT;
+		if ((ret = poll(&pfd, 1, timeout)) == 1) {
+			optlen = sizeof(optval);
+			if ((ret = getsockopt(s, SOL_SOCKET, SO_ERROR,
+			    &optval, &optlen)) == 0) {
+				errno = optval;
+				ret = optval == 0 ? 0 : -1;
+			}
+		} else if (ret == 0) {
+			errno = ETIMEDOUT;
+			ret = -1;
+		} else
+			ret = -1;
+	}
+
+	if (timeout != -1 && fcntl(s, F_SETFL, flags) == -1)
+		ret = -1;
+
+	return (ret);
+}
 
 /* netdial and netannouce code comes from libtask: http://swtch.com/libtask/
  * Copyright: http://swtch.com/libtask/COPYRIGHT
@@ -66,10 +110,10 @@
 
 /* make connection to server */
 int
-netdial(int domain, int proto, char *local, int local_port, char *server, int port)
+netdial(int domain, int proto, char *local, int local_port, char *server, int port, int timeout)
 {
     struct addrinfo hints, *local_res, *server_res;
-    int s;
+    int s, saved_errno;
 
     if (local) {
         memset(&hints, 0, sizeof(hints));
@@ -102,18 +146,22 @@ netdial(int domain, int proto, char *local, int local_port, char *server, int po
         }
 
         if (bind(s, (struct sockaddr *) local_res->ai_addr, local_res->ai_addrlen) < 0) {
+	    saved_errno = errno;
 	    close(s);
 	    freeaddrinfo(local_res);
 	    freeaddrinfo(server_res);
+	    errno = saved_errno;
             return -1;
 	}
         freeaddrinfo(local_res);
     }
 
     ((struct sockaddr_in *) server_res->ai_addr)->sin_port = htons(port);
-    if (connect(s, (struct sockaddr *) server_res->ai_addr, server_res->ai_addrlen) < 0 && errno != EINPROGRESS) {
+    if (timeout_connect(s, (struct sockaddr *) server_res->ai_addr, server_res->ai_addrlen, timeout) < 0 && errno != EINPROGRESS) {
+	saved_errno = errno;
 	close(s);
 	freeaddrinfo(server_res);
+	errno = saved_errno;
         return -1;
     }
 
@@ -128,7 +176,7 @@ netannounce(int domain, int proto, char *local, int port)
 {
     struct addrinfo hints, *res;
     char portstr[6];
-    int s, opt;
+    int s, opt, saved_errno;
 
     snprintf(portstr, 6, "%d", port);
     memset(&hints, 0, sizeof(hints));
@@ -164,8 +212,10 @@ netannounce(int domain, int proto, char *local, int port)
     opt = 1;
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, 
 		   (char *) &opt, sizeof(opt)) < 0) {
+	saved_errno = errno;
 	close(s);
 	freeaddrinfo(res);
+	errno = saved_errno;
 	return -1;
     }
     /*
@@ -184,16 +234,20 @@ netannounce(int domain, int proto, char *local, int port)
 	    opt = 1;
 	if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, 
 		       (char *) &opt, sizeof(opt)) < 0) {
+	    saved_errno = errno;
 	    close(s);
 	    freeaddrinfo(res);
+	    errno = saved_errno;
 	    return -1;
 	}
     }
 #endif /* IPV6_V6ONLY */
 
     if (bind(s, (struct sockaddr *) res->ai_addr, res->ai_addrlen) < 0) {
+        saved_errno = errno;
         close(s);
 	freeaddrinfo(res);
+        errno = saved_errno;
         return -1;
     }
 
@@ -201,7 +255,9 @@ netannounce(int domain, int proto, char *local, int port)
     
     if (proto == SOCK_STREAM) {
         if (listen(s, 5) < 0) {
+	    saved_errno = errno;
 	    close(s);
+	    errno = saved_errno;
             return -1;
         }
     }
@@ -351,84 +407,6 @@ Nsendfile(int fromfd, int tofd, const char *buf, size_t count)
 }
 
 /*************************************************************************/
-
-/**
- * getsock_tcp_mss - Returns the MSS size for TCP
- *
- */
-
-int
-getsock_tcp_mss(int inSock)
-{
-    int             mss = 0;
-
-    int             rc;
-    socklen_t       len;
-
-    assert(inSock >= 0); /* print error and exit if this is not true */
-
-    /* query for mss */
-    len = sizeof(mss);
-    rc = getsockopt(inSock, IPPROTO_TCP, TCP_MAXSEG, (char *)&mss, &len);
-    if (rc == -1) {
-	perror("getsockopt TCP_MAXSEG");
-	return -1;
-    }
-
-    return mss;
-}
-
-
-
-/*************************************************************/
-
-/* sets TCP_NODELAY and TCP_MAXSEG if requested */
-// XXX: This function is not being used.
-
-int
-set_tcp_options(int sock, int no_delay, int mss)
-{
-    socklen_t len;
-    int rc;
-    int new_mss;
-
-    if (no_delay == 1) {
-        len = sizeof(no_delay);
-        rc = setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&no_delay, len);
-        if (rc == -1) {
-            perror("setsockopt TCP_NODELAY");
-            return -1;
-        }
-    }
-#ifdef TCP_MAXSEG
-    if (mss > 0) {
-        len = sizeof(new_mss);
-        assert(sock != -1);
-
-        /* set */
-        new_mss = mss;
-        len = sizeof(new_mss);
-        rc = setsockopt(sock, IPPROTO_TCP, TCP_MAXSEG, (char *)&new_mss, len);
-        if (rc == -1) {
-            perror("setsockopt TCP_MAXSEG");
-            return -1;
-        }
-        /* verify results */
-        rc = getsockopt(sock, IPPROTO_TCP, TCP_MAXSEG, (char *)&new_mss, &len);
-        if (rc == -1) {
-            perror("getsockopt TCP_MAXSEG");
-            return -1;
-        }
-        if (new_mss != mss) {
-            perror("setsockopt value mismatch");
-            return -1;
-        }
-    }
-#endif
-    return 0;
-}
-
-/****************************************************************************/
 
 int
 setnonblocking(int fd, int nonblocking)
